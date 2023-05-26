@@ -5,7 +5,7 @@ from PyPDF2 import PdfReader
 import docx2txt
 import csv
 
-DEFAULT_CONTENT_LEN_LIMIT = 2800
+DEFAULT_CONTENT_LEN_LIMIT = 1800
 
 
 def extract_info_from_filepath(
@@ -49,7 +49,11 @@ def extract_text_from_file(
         for page in reader.pages:
             if len(extracted_text) >= content_len_limit:
                 break
-            extracted_text += page.extract_text() + "\n"
+            try:
+                extracted_text += page.extract_text() + "\n"
+            except Exception as e:
+                print(f"Error in PDF {file}: {e}")
+                continue
     elif mimetype == "text/plain" or mimetype == "text/markdown":
         # Read text from plain text file
         extracted_text = file.read().decode("utf-8")

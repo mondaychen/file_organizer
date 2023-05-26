@@ -61,8 +61,9 @@ def start():
 
     output = "# !/bin/bash\n"
 
+    print('Running the organizer...')
     # loop through the files, extract text from them, and send them to the chatbot
-    for file in files[5:15]:
+    for file in files:
         filepath = os.path.join(dir, file)
         mimetype, content = extract_info_from_filepath(filepath, config.content_length_limit)
         if mimetype is None:
