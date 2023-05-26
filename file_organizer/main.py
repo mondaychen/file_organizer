@@ -78,8 +78,8 @@ def start():
         if response.content not in destinations:
             print(f"Invalid response: {response.content} for file {file}. Skipping.")
             continue
+        print(f"{file} => {response.content}")
         newline = f'mv "{filepath}" "{os.path.join(os.path.expanduser(response.content), file)}"\n'
-        print(newline)
         output += newline
 
     print('Please check the output in "output.sh" and run it: source output.sh')
