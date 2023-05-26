@@ -1,0 +1,20 @@
+openai_api_key = 
+
+dir = "~/Downloads"
+
+destinations = [
+    "~/Downloads/software/games",
+    "~/Downloads/software",
+    "~/Downloads/pictures",
+    "~/Downloads/other",
+    "~/Downloads/work",
+    "~/Downloads/work/data",
+    "~/Downloads/work/slides",
+    "~/Downloads/personal",
+    "~/Downloads/personal/family",
+    "~/Downloads/personal/bills",
+    "~/Downloads/personal/legal",
+    "~/Downloads/personal/tax",
+]
+
+
