@@ -6,7 +6,7 @@ This project is an experiment to use LLM as a general purpose classifier. It rea
 
 As of now, you need to have an OpenAI API key to use this project.
 
-First, install the dependencies wity poetry:
+First, install the dependencies with poetry:
 
 ```bash
 poetry update
@@ -22,7 +22,7 @@ poetry run start
 
 Example output:
 
-```bash
+```
 ➜  file_organizer git:(main) poetry run start
 Found 7 files in /Users/mengdi/Downloads. Do you want to proceed? (Y/n)
 
