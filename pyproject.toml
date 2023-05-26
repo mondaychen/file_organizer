@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "file_organizer"
+version = "0.1.0"
+description = ""
+authors = ["Mengdi Chen <monday.chen@gmail.com>"]
+readme = "README.md"
+packages = [{include = "file_organizer"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+langchain = "^0.0.178"
+openai = "^0.27.7"
+pypdf2 = "^3.0.1"
+docx2txt = "^0.8"
+toml = "^0.10.2"
+
+[tool.poetry.scripts]
+start = "file_organizer.main:start"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
