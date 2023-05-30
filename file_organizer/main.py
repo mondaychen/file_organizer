@@ -1,6 +1,6 @@
 import os
 import toml
-from langchain.chat_models import ChatOpenAI
+from langchain.chat_models import ChatOpenAI, ChatAnthropic
 
 from .toml_types import Config
 from .file import extract_info_from_filepath
@@ -52,20 +52,32 @@ def start():
             print("Please create the missing destinations.")
             exit(0)
 
-    chat = ChatOpenAI(
-        model="gpt-3.5-turbo",
-        temperature=0, # because we want the chatbot to be deterministic
-        openai_api_key=config.openai_api_key,
-        client=None,
-    )
+    chat = None
+    if config.openai_api_key is not None:
+        chat = ChatOpenAI(
+            model="gpt-3.5-turbo",
+            temperature=0,  # because we want the chatbot to be deterministic
+            openai_api_key=config.openai_api_key,
+            client=None,
+        )
+    elif config.anthropic_api_key is not None:
+        chat = ChatAnthropic(
+            temperature=0,  # because we want the chatbot to be deterministic
+            anthropic_api_key=config.anthropic_api_key,
+        )
+
+    if chat is None:
+        raise Exception("No chatbot API key provided.")
 
     output = "# !/bin/bash\n"
 
-    print('Running the organizer...')
+    print("Running the organizer...")
     # loop through the files, extract text from them, and send them to the chatbot
     for file in files:
         filepath = os.path.join(dir, file)
-        mimetype, content = extract_info_from_filepath(filepath, config.content_length_limit)
+        mimetype, content = extract_info_from_filepath(
+            filepath, config.content_length_limit
+        )
         if mimetype is None:
             continue
         # get the response from the chatbot
@@ -75,12 +87,13 @@ def start():
                 get_user_message(config.destinations, file, mimetype, content),
             ]
         )
+        response_content = response.content.strip(" \t\n\r")
         # verify the response is valid in case the chatbot does not follow the response format
-        if response.content not in destinations:
-            print(f"Invalid response: {response.content} for file {file}. Skipping.")
+        if response_content not in destinations:
+            print(f"Invalid response: {response_content} for file {file}. Skipping.")
             continue
-        print(f"{file} => {response.content}")
-        newline = f'mv "{filepath}" "{os.path.join(os.path.expanduser(response.content), file)}"\n'
+        print(f"{file} => {response_content}")
+        newline = f'mv "{filepath}" "{os.path.join(os.path.expanduser(response_content), file)}"\n'
         output += newline
 
     print('Please check the output in "output.sh" and run it: source output.sh')

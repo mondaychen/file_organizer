@@ -1,20 +1,22 @@
+# at least one of these API keys is required
 openai_api_key = 
+anthropic_api_key =
 
+# path to the directory you want to scan for files
 dir = "~/Downloads"
 
+# a list of destination candidates
 destinations = [
     "~/Downloads/software/games",
     "~/Downloads/software",
     "~/Downloads/pictures",
     "~/Downloads/other",
-    "~/Downloads/work",
-    "~/Downloads/work/data",
-    "~/Downloads/work/slides",
-    "~/Downloads/personal",
-    "~/Downloads/personal/family",
-    "~/Downloads/personal/bills",
-    "~/Downloads/personal/legal",
-    "~/Downloads/personal/tax",
+    "~/Documents/work",
+    "~/Documents/work/data",
+    "~/Documents/work/slides",
+    "~/Documents/personal",
+    "~/Documents/personal/family",
+    "~/Documents/personal/bills",
+    "~/Documents/personal/legal",
+    "~/Documents/personal/tax",
 ]
-
-

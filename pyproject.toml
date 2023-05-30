@@ -13,6 +13,7 @@ openai = "^0.27.7"
 pypdf2 = "^3.0.1"
 docx2txt = "^0.8"
 toml = "^0.10.2"
+anthropic = "^0.2.9"
 
 [tool.poetry.scripts]
 start = "file_organizer.main:start"

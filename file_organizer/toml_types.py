@@ -1,7 +1,8 @@
 from typing import List, Optional
 
 class Config(dict):
-    openai_api_key: str
+    openai_api_key: Optional[str] = None
+    anthropic_api_key: Optional[str] = None
     dir: str
     recursive: bool = False
     content_length_limit: Optional[int] = None
