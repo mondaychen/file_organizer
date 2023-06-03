@@ -5,6 +5,7 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Panel } from "primereact/panel";
 import { Tooltip } from "primereact/tooltip";
+import PQueue from "p-queue";
 
 import FileTable from "./FileTable";
 import DestinationList from "./DestinationList";
@@ -14,19 +15,21 @@ import type { File } from "../types";
 interface CustomWindow extends Window {
   __FILE_ORGANIZER__?: {
     API_LIST_DIR: string;
-    WS_URL: string;
+    API_ANALYZE_FILE: string;
   };
 }
 declare const window: CustomWindow;
 
 let API_LIST_DIR = "http://127.0.0.1:5000/listdir";
 let API_ANALYZE_FILE = "http://127.0.0.1:5000/analyze";
-let WS_URL = "ws://localhost:8080/ws";
 
 if (typeof window !== "undefined") {
   API_LIST_DIR = window.__FILE_ORGANIZER__?.API_LIST_DIR || API_LIST_DIR;
-  WS_URL = window.__FILE_ORGANIZER__?.WS_URL || WS_URL;
+  API_ANALYZE_FILE =
+    window.__FILE_ORGANIZER__?.API_ANALYZE_FILE || API_ANALYZE_FILE;
 }
+
+const queue = new PQueue({ concurrency: 1 });
 
 async function postData(url: string, data = {}) {
   const res = await fetch(url, {
@@ -41,6 +44,36 @@ async function postData(url: string, data = {}) {
   }
 
   return res.json();
+}
+
+async function analyzeFile(
+  file: File,
+  path: string,
+  destinations: string[],
+  refreshState: () => void
+) {
+  file.status = "analyzing";
+  refreshState();
+  return postData(API_ANALYZE_FILE, {
+    file: file.name,
+    dir: path,
+    destinations,
+  })
+    .then((data) => {
+      if (data.destination != null) {
+        file.destination = data.destination;
+        file.status = "analyzed";
+      } else {
+        file.status = "failed";
+      }
+    })
+    .catch((err) => {
+      file.destination = undefined;
+      file.status = "failed";
+    })
+    .finally(() => {
+      refreshState();
+    });
 }
 
 const DEFAULT_DESTINATIONS = [
@@ -77,26 +110,29 @@ export default function Main() {
     setNewDes("");
   };
   const onAnalyze = (file: File) => {
-    file.status = "analyzing";
+    file.status = "pending";
     setFiles([...files]);
-    postData(API_ANALYZE_FILE, {
-      file: file.name,
-      dir: path,
-      destinations,
-    }).then((data) => {
-      if (data.destination != null) {
-        file.destination = data.destination;
-        file.status = "analyzed";
-      } else {
-        file.status = "failed";
-      }
-    }).catch((err) => {
-      file.destination = undefined;
-      file.status = "failed";
-    }).finally(() => {
-      setFiles([...files]);
+    queue.add(() =>
+      analyzeFile(file, path, destinations, () => setFiles([...files]))
+    );
+  };
+  const onAnalyzeSelected = () => {
+    selectedFiles.forEach((file) => {
+      file.status = "pending";
+    });
+    setFiles([...files]);
+    selectedFiles.forEach((file) => {
+      queue.add(() =>
+        analyzeFile(file, path, destinations, () => setFiles([...files]))
+      );
     });
   };
+  const hasPendingSelected = selectedFiles.some(
+    (file) => file.status === "pending" || file.status === "analyzing"
+  );
+  const analyzedSelected = selectedFiles.filter(
+    (file) => file.status === "analyzed"
+  );
   return (
     <div className="flex justify-items-stretch">
       <Tooltip target=".-app-tooltip" showDelay={500} />
@@ -117,8 +153,22 @@ export default function Main() {
           </form>
           <div>
             <Button
-              label={`Analyze (${selectedFiles.length})`}
+              className="mr-2"
+              label={
+                hasPendingSelected
+                  ? "Analyzing"
+                  : analyzedSelected.length > 0
+                  ? "(Re)Analyze"
+                  : "Analyze" + ` (${selectedFiles.length})`
+              }
+              loading={hasPendingSelected}
               disabled={selectedFiles.length === 0}
+              onClick={onAnalyzeSelected}
+            />
+            <Button
+              severity="success"
+              label={`Move (${analyzedSelected.length})`}
+              disabled={hasPendingSelected || analyzedSelected.length === 0}
             />
           </div>
         </div>
@@ -132,7 +182,10 @@ export default function Main() {
       <div className="pl-4 w-96 flex-none">
         <h2 className="font-semibold text-xl pb-2">Settings</h2>
         <Panel header="Destinations">
-          <DestinationList destinations={destinations} setDestinations={setDestinations} />
+          <DestinationList
+            destinations={destinations}
+            setDestinations={setDestinations}
+          />
           <form className="mb-2 flex" onSubmit={onAddDestination}>
             <InputText
               className="grow mr-2"

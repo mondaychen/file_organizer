@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { DataTable } from "primereact/datatable";
 import { Button } from "primereact/button";
+import type { ButtonProps } from "primereact/button";
 import { Column } from "primereact/column";
 import type { File } from "../types";
 
@@ -21,6 +22,9 @@ export default function FileTable({
     return (
       <div className="flex flex-col justify-around">
         <div>{file.name}</div>
+        {file.status === "pending" && (
+          <div className="text-xs text-gray-400">Pending...</div>
+        )}
         {file.status === "analyzing" && (
           <div className="text-xs text-blue-600">Analyzing...</div>
         )}
@@ -37,13 +41,21 @@ export default function FileTable({
     );
   };
   const actionCellTemplate = (file: File) => {
+    let actionButtonType: ButtonProps['severity'] = undefined;
+    if (file.status === "analyzed") {
+      actionButtonType = "success";
+    } else if (file.status === "failed") {
+      actionButtonType = "warning";
+    } else if (file.status === "pending") {
+      actionButtonType = "secondary";
+    }
     return (
       <Button
-        loading={file.status === "analyzing"}
+        loading={file.status === "analyzing" || file.status === "pending"}
         icon={file.status === "analyzed" || file.status === 'failed' ? "pi pi-refresh" : "pi pi-send"}
         size="small"
         outlined
-        severity={file.status === "analyzed" ? "success" : undefined}
+        severity={actionButtonType}
         onClick={() => onAnalyze(file)}
       />
     );
