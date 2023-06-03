@@ -181,7 +181,7 @@ export default function Main() {
       </div>
       <div className="pl-4 w-96 flex-none">
         <h2 className="font-semibold text-xl pb-2">Settings</h2>
-        <Panel header="Destinations">
+        <Panel header="Destinations" toggleable>
           <DestinationList
             destinations={destinations}
             setDestinations={setDestinations}
