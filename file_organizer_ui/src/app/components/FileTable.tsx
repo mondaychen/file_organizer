@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 
 import { DataTable } from "primereact/datatable";
 import { Button } from "primereact/button";
@@ -37,13 +36,15 @@ export default function FileTable({
           </div>
         )}
         {file.status === "failed" && (
-          <div className="text-xs text-red-700">Unable to analyze this file.</div>
+          <div className="text-xs text-red-700">
+            Unable to analyze this file.
+          </div>
         )}
       </div>
     );
   };
   const actionCellTemplate = (file: File) => {
-    let actionButtonType: ButtonProps['severity'] = undefined;
+    let actionButtonType: ButtonProps["severity"] = undefined;
     if (file.status === "failed") {
       actionButtonType = "warning";
     } else if (file.status === "pending") {
@@ -51,26 +52,30 @@ export default function FileTable({
     }
     return (
       <>
-      <Button
-        loading={file.status === "analyzing" || file.status === "pending"}
-        icon={file.status === "analyzed" || file.status === 'failed' ? "pi pi-refresh" : "pi pi-send"}
-        size="small"
-        outlined
-        severity={actionButtonType}
-        title="Analyze this file"
-        onClick={() => onAnalyze(file)}
-      />
-      {file.status === "analyzed" && (
         <Button
-          icon="pi pi-file-export"
-          severity="success"
+          loading={file.status === "analyzing" || file.status === "pending"}
+          icon={
+            file.status === "analyzed" || file.status === "failed"
+              ? "pi pi-refresh"
+              : "pi pi-send"
+          }
           size="small"
           outlined
-          className="ml-1"
-          title="Move this file to its destination"
-          onClick={() => onMove(file)}
+          severity={actionButtonType}
+          title="Analyze this file"
+          onClick={() => onAnalyze(file)}
         />
-      )}
+        {file.status === "analyzed" && (
+          <Button
+            icon="pi pi-file-export"
+            severity="success"
+            size="small"
+            outlined
+            className="ml-1"
+            title="Move this file to its destination"
+            onClick={() => onMove(file)}
+          />
+        )}
       </>
     );
   };
@@ -89,7 +94,11 @@ export default function FileTable({
       <Column selectionMode="multiple" headerStyle={{ width: "3rem" }}></Column>
 
       <Column header="File" body={fileInfoCellTemplate}></Column>
-      <Column headerStyle={{width: '8rem'}} header="Action" body={actionCellTemplate}></Column>
+      <Column
+        headerStyle={{ width: "8rem" }}
+        header="Action"
+        body={actionCellTemplate}
+      ></Column>
     </DataTable>
   );
 }

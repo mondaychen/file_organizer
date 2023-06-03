@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Panel } from "primereact/panel";
-import { Tooltip } from "primereact/tooltip";
 import PQueue from "p-queue";
 
 import FileTable from "./FileTable";
@@ -29,8 +28,7 @@ if (typeof window !== "undefined") {
   API_LIST_DIR = window.__FILE_ORGANIZER__?.API_LIST_DIR || API_LIST_DIR;
   API_ANALYZE_FILE =
     window.__FILE_ORGANIZER__?.API_ANALYZE_FILE || API_ANALYZE_FILE;
-  API_MOVE_FILES =
-    window.__FILE_ORGANIZER__?.API_MOVE_FILES || API_MOVE_FILES;
+  API_MOVE_FILES = window.__FILE_ORGANIZER__?.API_MOVE_FILES || API_MOVE_FILES;
 }
 
 const queue = new PQueue({ concurrency: 1 });
@@ -165,7 +163,6 @@ export default function Main() {
   };
   return (
     <div className="flex justify-items-stretch">
-      <Tooltip target=".-app-tooltip" showDelay={500} />
       <div className="flex-1">
         <div className="mb-2 flex justify-items-stretch">
           <form className="grow basis-0" onSubmit={onShowFiles}>

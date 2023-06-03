@@ -21,7 +21,11 @@ function HoverToShow({
   };
 
   return (
-    <div onMouseOver={handleMouseOver} onMouseOut={handleMouseOut} {...otherProps}>
+    <div
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
+      {...otherProps}
+    >
       {children}
       {isHovering && contentToShow}
     </div>
@@ -38,29 +42,34 @@ export default function DestinationList({
   return (
     <ul>
       {destinations.map((dest) => (
-        <li className="mb-2 pb-2 border-b-2" key={dest}>
-            <HoverToShow
-              className="flex justify-between"
-              contentToShow={
-                <Button
-                  icon="pi pi-trash"
-                  size="small"
-                  outlined
-                  severity="danger"
-                  className="ml-2"
-                  title="Remove this destination"
-                  onClick={() =>
-                    setDestinations(destinations.filter((d) => d !== dest))
-                  }
-                />
-              }
-              data-pr-tooltip={dest}
-              data-pr-position="left"
-            >
-              <div className="truncate leading-10 -app-tooltip">
-                {dest}
-              </div>
-            </HoverToShow>
+        <li
+          className="border-b-2 py-1 last:border-none leading-10"
+          data-pr-tooltip={dest}
+          data-pr-position="left"
+          key={dest}
+        >
+          <HoverToShow
+            className="flex justify-between"
+            contentToShow={
+              <Button
+                icon="pi pi-trash"
+                size="small"
+                outlined
+                severity="danger"
+                className="ml-2 text-xs"
+                rounded
+                text
+                title="Remove this destination"
+                onClick={() =>
+                  setDestinations(destinations.filter((d) => d !== dest))
+                }
+              />
+            }
+          >
+            <div className="truncate" title={dest}>
+              {dest}
+            </div>
+          </HoverToShow>
         </li>
       ))}
     </ul>
