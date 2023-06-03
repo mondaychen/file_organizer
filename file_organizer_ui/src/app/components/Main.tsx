@@ -42,7 +42,7 @@ async function getData(url: string, params: Record<string, string> = {}) {
 }
 
 export default function Main() {
-  const [path, setPath] = useState<string>("");
+  const [path, setPath] = useState<string>("~/Downloads");
   const [files, setFiles] = useState<Array<{ id: string; name: string }>>([]);
   const [selectedFiles, setSelectedFiles] = useState<File[] | null>(null);
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -56,6 +56,7 @@ export default function Main() {
       <div className="grow">
         <form className="mb-2" onSubmit={onSubmit}>
           <InputText
+            className="w-64"
             placeholder="Path to a messy directory"
             value={path}
             onChange={(e) => setPath(e.target.value)}
@@ -80,10 +81,10 @@ export default function Main() {
           <Column field="name" header="Name"></Column>
         </DataTable>
       </div>
-      <div className="flex-none ml-2.5 border-l-2 w-96 border-green-800 px-2">
+      <div className="flex-none ml-2.5 border-l-2 w-96 border-cyan-800 px-2">
         <form className="mb-2">
           <input
-            className="rounded px-4 py-2 w-64 focus:outline-green-600"
+            className="rounded px-4 py-2 w-64 focus:outline-blue-600"
             type="text"
             placeholder="New destination directory"
           />
