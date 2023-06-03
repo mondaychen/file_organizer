@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
 import { Panel } from "primereact/panel";
 import { Tooltip } from "primereact/tooltip";
+
+import FileTable from "./FileTable";
+
+import type { File } from "../types";
 
 interface CustomWindow extends Window {
   __FILE_ORGANIZER__?: {
@@ -15,13 +17,6 @@ interface CustomWindow extends Window {
   };
 }
 declare const window: CustomWindow;
-
-interface File {
-  id: string;
-  name: string;
-  status: "ready" | "failed" | "analyzing" | "analyzed" | null;
-  destination?: string;
-}
 
 let API_LIST_DIR = "http://127.0.0.1:5000/listdir";
 let API_ANALYZE_FILE = "http://127.0.0.1:5000/analyze";
@@ -62,7 +57,7 @@ const DEFAULT_DESTINATIONS = [
 export default function Main() {
   const [path, setPath] = useState<string>("~/Downloads");
   const [currentDir, setCurrentDir] = useState<string | null>(null);
-  const [files, setFiles] = useState<Array<{ id: string; name: string }>>([]);
+  const [files, setFiles] = useState<File[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [destinations, setDestinations] =
     useState<string[]>(DEFAULT_DESTINATIONS);
@@ -80,7 +75,7 @@ export default function Main() {
     setDestinations([...destinations, newDes]);
     setNewDes("");
   };
-  const onAnalyse = (file: File) => {
+  const onAnalyze = (file: File) => {
     file.status = "analyzing";
     setFiles([...files]);
     postData(API_ANALYZE_FILE, {
@@ -92,17 +87,6 @@ export default function Main() {
       file.status = "analyzed";
       setFiles([...files]);
     });
-  };
-  const actionCellTemplate = (file: File) => {
-    return (
-      <Button
-        loading={file.status === "analyzing"}
-        icon={file.status === 'analyzed' ? 'pi pi-refresh' : "pi pi-send"}
-        size="small"
-        severity={file.status === 'analyzed' ? "success" : undefined}
-        onClick={() => onAnalyse(file)}
-      />
-    );
   };
   return (
     <div className="flex justify-items-stretch">
@@ -128,26 +112,12 @@ export default function Main() {
             />
           </div>
         </div>
-        <DataTable
-          value={files}
-          selectionMode="checkbox"
-          selection={selectedFiles}
-          onSelectionChange={(e) => {
-            const value = e.value as File[];
-            setSelectedFiles(value);
-          }}
-          dataKey="id"
-          tableStyle={{ minWidth: "50rem" }}
-        >
-          <Column
-            selectionMode="multiple"
-            headerStyle={{ width: "3rem" }}
-          ></Column>
-
-          <Column field="name" header="Name"></Column>
-          <Column field="destination" header="Destination"></Column>
-          <Column header="Action" body={actionCellTemplate}></Column>
-        </DataTable>
+        <FileTable
+          files={files}
+          onAnalyze={onAnalyze}
+          selectedFiles={selectedFiles}
+          setSelectedFiles={setSelectedFiles}
+        />
       </div>
       <div className="pl-4 w-96 flex-none">
         <h2 className="font-semibold text-xl pb-2">Settings</h2>
