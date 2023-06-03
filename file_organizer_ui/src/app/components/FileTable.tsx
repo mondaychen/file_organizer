@@ -57,6 +57,7 @@ export default function FileTable({
         size="small"
         outlined
         severity={actionButtonType}
+        title="Analyze this file"
         onClick={() => onAnalyze(file)}
       />
       {file.status === "analyzed" && (
@@ -66,6 +67,7 @@ export default function FileTable({
           size="small"
           outlined
           className="ml-1"
+          title="Move this file to its destination"
           onClick={() => onMove(file)}
         />
       )}

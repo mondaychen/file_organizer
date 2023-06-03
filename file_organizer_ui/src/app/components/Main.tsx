@@ -193,12 +193,14 @@ export default function Main() {
               }
               loading={hasPendingSelected}
               disabled={selectedFiles.length === 0}
+              title="Analyze selected files"
               onClick={onAnalyzeSelected}
             />
             <Button
               severity="success"
               label={`Move (${analyzedSelected.length})`}
               disabled={hasPendingSelected || analyzedSelected.length === 0}
+              title="Move selected files"
               onClick={onMoveSelected}
             />
           </div>

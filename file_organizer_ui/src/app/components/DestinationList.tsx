@@ -48,6 +48,7 @@ export default function DestinationList({
                   outlined
                   severity="danger"
                   className="ml-2"
+                  title="Remove this destination"
                   onClick={() =>
                     setDestinations(destinations.filter((d) => d !== dest))
                   }
