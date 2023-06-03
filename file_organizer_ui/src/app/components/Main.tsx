@@ -84,8 +84,16 @@ export default function Main() {
       dir: path,
       destinations,
     }).then((data) => {
-      file.destination = data.destination;
-      file.status = "analyzed";
+      if (data.destination != null) {
+        file.destination = data.destination;
+        file.status = "analyzed";
+      } else {
+        file.status = "failed";
+      }
+    }).catch((err) => {
+      file.destination = undefined;
+      file.status = "failed";
+    }).finally(() => {
       setFiles([...files]);
     });
   };

@@ -45,6 +45,7 @@ export default function DestinationList({
                 <Button
                   icon="pi pi-trash"
                   size="small"
+                  outlined
                   severity="danger"
                   className="ml-2"
                   onClick={() =>
