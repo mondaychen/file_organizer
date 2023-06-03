@@ -1,15 +1,13 @@
 import "primereact/resources/primereact.min.css";  
 //theme
 import "primereact/resources/themes/mira/theme.css";
-import './globals.css'
-import { Inter } from 'next/font/google'
-
-const inter = Inter({ subsets: ['latin'] })
+import 'primeicons/primeicons.css';
+import './globals.css';
 
 export const metadata = {
   title: 'File Organizer',
   description: 'File Organizer UI',
-}
+};
 
 export default function RootLayout({
   children,
@@ -18,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body>{children}</body>
     </html>
   )
 }

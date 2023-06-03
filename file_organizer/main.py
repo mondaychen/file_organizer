@@ -1,6 +1,7 @@
 import os
 import toml
 from langchain.chat_models import ChatOpenAI, ChatAnthropic
+from typing import List, Optional
 
 from .toml_types import Config
 from .file import extract_info_from_filepath
@@ -99,3 +100,42 @@ def start():
     print('Please check the output in "output.sh" and run it: source output.sh')
     with open("output.sh", "w") as f:
         f.write(output)
+
+chat = None
+if 'openai_api_key' in os.environ and os.environ['openai_api_key'] is not None:
+    chat = ChatOpenAI(
+        model="gpt-3.5-turbo",
+        temperature=0,  # because we want the chatbot to be deterministic
+        openai_api_key=os.environ['openai_api_key'],
+        client=None,
+    )
+elif 'anthropic_api_key' in os.environ and os.environ['anthropic_api_key'] is not None:
+    chat = ChatAnthropic(
+        temperature=0,  # because we want the chatbot to be deterministic
+        anthropic_api_key=os.environ['anthropic_api_key'],
+    )
+if chat is None:
+    raise Exception("No chatbot API key provided.")
+
+def analyze_file(dir: str, filename: str, destinations: List[str]) -> Optional[str]:
+    print("Running the organizer...")
+
+    filepath = os.path.join(os.path.expanduser(dir), filename)
+    mimetype, content = extract_info_from_filepath(
+        filepath
+    )
+    if mimetype is None:
+        return None
+    # get the response from the chatbot
+    response = chat(
+        [
+            get_system_message(),
+            get_user_message(destinations, filename, mimetype, content),
+        ]
+    )
+    response_content = response.content.strip(" \t\n\r")
+    # verify the response is valid in case the chatbot does not follow the response format
+    if response_content not in destinations:
+        print(f"Invalid response: {response_content} for file {filename}. Skipping.")
+        return None
+    return response_content
