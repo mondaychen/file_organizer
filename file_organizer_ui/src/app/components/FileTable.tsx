@@ -10,11 +10,13 @@ import type { File } from "../types";
 export default function FileTable({
   files,
   onAnalyze,
+  onMove,
   selectedFiles,
   setSelectedFiles,
 }: {
   files: File[];
   onAnalyze: (file: File) => void;
+  onMove: (file: File) => void;
   selectedFiles: File[];
   setSelectedFiles: (files: File[]) => void;
 }) {
@@ -42,14 +44,13 @@ export default function FileTable({
   };
   const actionCellTemplate = (file: File) => {
     let actionButtonType: ButtonProps['severity'] = undefined;
-    if (file.status === "analyzed") {
-      actionButtonType = "success";
-    } else if (file.status === "failed") {
+    if (file.status === "failed") {
       actionButtonType = "warning";
     } else if (file.status === "pending") {
       actionButtonType = "secondary";
     }
     return (
+      <>
       <Button
         loading={file.status === "analyzing" || file.status === "pending"}
         icon={file.status === "analyzed" || file.status === 'failed' ? "pi pi-refresh" : "pi pi-send"}
@@ -58,6 +59,17 @@ export default function FileTable({
         severity={actionButtonType}
         onClick={() => onAnalyze(file)}
       />
+      {file.status === "analyzed" && (
+        <Button
+          icon="pi pi-file-export"
+          severity="success"
+          size="small"
+          outlined
+          className="ml-1"
+          onClick={() => onMove(file)}
+        />
+      )}
+      </>
     );
   };
   return (
@@ -75,7 +87,7 @@ export default function FileTable({
       <Column selectionMode="multiple" headerStyle={{ width: "3rem" }}></Column>
 
       <Column header="File" body={fileInfoCellTemplate}></Column>
-      <Column headerStyle={{width: '4rem'}} header="Action" body={actionCellTemplate}></Column>
+      <Column headerStyle={{width: '8rem'}} header="Action" body={actionCellTemplate}></Column>
     </DataTable>
   );
 }

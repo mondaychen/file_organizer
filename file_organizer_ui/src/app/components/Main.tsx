@@ -137,6 +137,20 @@ export default function Main() {
   const analyzedSelected = selectedFiles.filter(
     (file) => file.status === "analyzed"
   );
+  const onMove = (file: File) => {
+    postData(API_MOVE_FILES, {
+      dir: path,
+      operations: [
+        {
+          file: file.name,
+          destination: file.destination,
+        },
+      ],
+    }).then(() => {
+      setFiles(files.filter((f) => f !== file));
+      setSelectedFiles(selectedFiles.filter((f) => f !== file));
+    });
+  };
   const onMoveSelected = () => {
     postData(API_MOVE_FILES, {
       dir: path,
@@ -191,6 +205,7 @@ export default function Main() {
         </div>
         <FileTable
           files={files}
+          onMove={onMove}
           onAnalyze={onAnalyze}
           selectedFiles={selectedFiles}
           setSelectedFiles={setSelectedFiles}
