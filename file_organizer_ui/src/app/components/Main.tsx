@@ -7,6 +7,7 @@ import { Panel } from "primereact/panel";
 import { Tooltip } from "primereact/tooltip";
 
 import FileTable from "./FileTable";
+import DestinationList from "./DestinationList";
 
 import type { File } from "../types";
 
@@ -90,6 +91,7 @@ export default function Main() {
   };
   return (
     <div className="flex justify-items-stretch">
+      <Tooltip target=".-app-tooltip" showDelay={500} />
       <div className="flex-1">
         <div className="mb-2 flex justify-items-stretch">
           <form className="grow basis-0" onSubmit={onShowFiles}>
@@ -122,30 +124,7 @@ export default function Main() {
       <div className="pl-4 w-96 flex-none">
         <h2 className="font-semibold text-xl pb-2">Settings</h2>
         <Panel header="Destinations">
-          <Tooltip target=".-app-tooltip" showDelay={500} />
-          <ul className="">
-            {destinations.map((dest) => (
-              <li className="mb-2 pb-2 border-b-2" key={dest}>
-                <div className="flex justify-between">
-                  <div
-                    className="truncate leading-10 -app-tooltip"
-                    data-pr-tooltip={dest}
-                    data-pr-position="left"
-                  >
-                    {dest}
-                  </div>
-                  <Button
-                    icon="pi pi-trash"
-                    size="small"
-                    className="ml-2"
-                    onClick={() =>
-                      setDestinations(destinations.filter((d) => d !== dest))
-                    }
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
+          <DestinationList destinations={destinations} setDestinations={setDestinations} />
           <form className="mb-2 flex" onSubmit={onAddDestination}>
             <InputText
               className="grow mr-2"
