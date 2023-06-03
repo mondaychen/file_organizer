@@ -77,3 +77,16 @@ def extract_text_from_file(
         return None
 
     return extracted_text[:content_len_limit]
+
+def move_file(dir: str, filename: str, destination: str) -> None:
+    """Move the file to the destination folder."""
+    import os
+    import shutil
+
+    des = os.path.expanduser(destination)
+
+    if not os.path.exists(des):
+        os.makedirs(des)
+    filepath = os.path.join(os.path.expanduser(dir), filename)
+    print("moving ", filepath, " => ", os.path.join(des, filename))
+    shutil.move(filepath, os.path.join(des, filename))

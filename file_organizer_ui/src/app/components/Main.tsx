@@ -16,17 +16,21 @@ interface CustomWindow extends Window {
   __FILE_ORGANIZER__?: {
     API_LIST_DIR: string;
     API_ANALYZE_FILE: string;
+    API_MOVE_FILES: string;
   };
 }
 declare const window: CustomWindow;
 
 let API_LIST_DIR = "http://127.0.0.1:5000/listdir";
 let API_ANALYZE_FILE = "http://127.0.0.1:5000/analyze";
+let API_MOVE_FILES = "http://127.0.0.1:5000/move_files";
 
 if (typeof window !== "undefined") {
   API_LIST_DIR = window.__FILE_ORGANIZER__?.API_LIST_DIR || API_LIST_DIR;
   API_ANALYZE_FILE =
     window.__FILE_ORGANIZER__?.API_ANALYZE_FILE || API_ANALYZE_FILE;
+  API_MOVE_FILES =
+    window.__FILE_ORGANIZER__?.API_MOVE_FILES || API_MOVE_FILES;
 }
 
 const queue = new PQueue({ concurrency: 1 });
@@ -133,6 +137,18 @@ export default function Main() {
   const analyzedSelected = selectedFiles.filter(
     (file) => file.status === "analyzed"
   );
+  const onMoveSelected = () => {
+    postData(API_MOVE_FILES, {
+      dir: path,
+      operations: analyzedSelected.map((file) => ({
+        file: file.name,
+        destination: file.destination,
+      })),
+    }).then(() => {
+      setFiles(files.filter((file) => !analyzedSelected.includes(file)));
+      setSelectedFiles([]);
+    });
+  };
   return (
     <div className="flex justify-items-stretch">
       <Tooltip target=".-app-tooltip" showDelay={500} />
@@ -169,6 +185,7 @@ export default function Main() {
               severity="success"
               label={`Move (${analyzedSelected.length})`}
               disabled={hasPendingSelected || analyzedSelected.length === 0}
+              onClick={onMoveSelected}
             />
           </div>
         </div>

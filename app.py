@@ -4,6 +4,7 @@ from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
 from langchain.chat_models import ChatOpenAI, ChatAnthropic
 from file_organizer.main import analyze_file
+from file_organizer.file import move_file
 import logging
 
 app = Flask(__name__)
@@ -58,3 +59,17 @@ def analyze():
         return {"error": "No suggestion found."}
     else:
         return {"destination": result}
+
+@app.post("/move_files")
+def move_files():
+    dir = request.get_json().get("dir")
+    operations = request.get_json().get("operations")
+    if dir is None:
+        abort(400, description="No directory provided.")
+    if operations is None or len(operations) == 0:
+        abort(400, description="No files provided.")
+    print(dir)
+    print(operations)
+    for op in operations:
+        move_file(dir, op['file'], op['destination'])
+    return {"success": True}

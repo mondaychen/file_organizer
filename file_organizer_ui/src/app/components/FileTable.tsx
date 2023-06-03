@@ -75,7 +75,7 @@ export default function FileTable({
       <Column selectionMode="multiple" headerStyle={{ width: "3rem" }}></Column>
 
       <Column header="File" body={fileInfoCellTemplate}></Column>
-      <Column header="Action" body={actionCellTemplate}></Column>
+      <Column headerStyle={{width: '4rem'}} header="Action" body={actionCellTemplate}></Column>
     </DataTable>
   );
 }
