@@ -7,7 +7,7 @@ from .toml_types import Config
 from .file import extract_info_from_filepath
 from .prompt import get_system_message, get_user_message
 
-
+"""
 def start():
     # check if config.toml exists
     if not os.path.isfile("config.toml"):
@@ -100,6 +100,7 @@ def start():
     print('Please check the output in "output.sh" and run it: source output.sh')
     with open("output.sh", "w") as f:
         f.write(output)
+"""
 
 chat = None
 if 'openai_api_key' in os.environ and os.environ['openai_api_key'] is not None:

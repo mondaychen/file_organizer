@@ -1,39 +1,46 @@
 # File Organizer
 
-This project is an experiment to use LLM as a general purpose classifier. It reads files in a directory and moves them to a new directory based on the file name, type and content. The destination directory is determined by the LLM model (OpenAI GPT-3.5).
+AI-powered assistant to organize files on your computer.
+
+## How it works
+It reads files in a directory and moves them to a new directory based on the file name, type and content. The destination directory is determined by the LLM model (supports GPT or Claude by Anthropic).
+
+## Setup
+
+### Install dependencies
+
+This project uses [Poetry](https://python-poetry.org/) for Python dependency management and NPM for JavaScript dependency management. Please have them both installed before proceeding.
+
+Install the dependencies:
+
+```bash
+poetry update && cd file_organizer_ui && npm install
+```
+
+### Configuration
+
+Copy .env.example to .env and fill in the values. At least one of the following is required:
+- openai_api_key
+- anthropic_api_key
+
+```bash
+cp .env.example .env
+```
+
 
 ## Usage
 
-As of now, you need to have an OpenAI API key to use this project.
-
-First, install the dependencies with poetry:
+First, start the backend server:
 
 ```bash
-poetry update
+poetry run flask run
 ```
 
-Then, create a `config.toml` file. You can use `config.toml.example` as a template.
-
-Finally, run the script:
+Then, start the UI:
 
 ```bash
-poetry run start
+cd file_organizer_ui && npm run dev
 ```
 
-Example output:
-
-```
-➜  file_organizer git:(main) poetry run start
-Found 7 files in /Users/mengdi/Downloads. Do you want to proceed? (Y/n)
-
-IMG_6943-removebg.png => ~/Downloads/pictures
-IMG_6943-removebg.jpg => ~/Downloads/pictures
-health-form.pdf => ~/Downloads/personal/medical
-2022_TaxReturn.pdf => ~/Downloads/personal/tax
-5E1FAFCF-2E4B-44B3-B2CD-8656B0890D86.jpeg => ~/Downloads/pictures
-IMG_6492.JPG => ~/Downloads/pictures
-Raycast.dmg => ~/Downloads/software
-
-Please check the output in "output.sh" and run it: source output.sh
-```
+Visit http://localhost:3000/ to use the UI.
 
