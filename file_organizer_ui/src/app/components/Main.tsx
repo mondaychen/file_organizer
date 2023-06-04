@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Panel } from "primereact/panel";
+import { Toast } from "primereact/toast";
 import PQueue from "p-queue";
 
 import FileTable from "./FileTable";
@@ -98,6 +99,7 @@ export default function Main() {
   const [destinations, setDestinations] =
     useState<string[]>(DEFAULT_DESTINATIONS);
   const [newDes, setNewDes] = useState<string>("");
+  const toast = useRef<Toast>(null);
   const onShowFiles = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     postData(API_LIST_DIR, { dir: path }).then((data) => {
@@ -145,6 +147,19 @@ export default function Main() {
         },
       ],
     }).then(() => {
+      toast.current?.show({
+        severity: "success",
+        summary: "Successfully moved",
+        life: 2000,
+        closable: true,
+        detail: (
+          <div className="break-words hyphens-auto">
+            <span className="font-medium break-words">{file.name}</span> has been
+            moved to{" "}
+            <span className="text-green-800 font-medium">{file.destination}</span>
+          </div>
+        ),
+      });
       setFiles(files.filter((f) => f !== file));
       setSelectedFiles(selectedFiles.filter((f) => f !== file));
     });
@@ -157,12 +172,24 @@ export default function Main() {
         destination: file.destination,
       })),
     }).then(() => {
+      toast.current?.show({
+        severity: "success",
+        summary: "Successfully moved",
+        life: 3000,
+        closable: true,
+        detail: (
+          <div>
+            {selectedFiles.length} file(s) has been moved.
+          </div>
+        ),
+      });
       setFiles(files.filter((file) => !analyzedSelected.includes(file)));
       setSelectedFiles([]);
     });
   };
-  return (
-    <div className="flex justify-items-stretch">
+  return (<>
+      <Toast ref={toast} position="bottom-right" />
+      <div className="flex justify-items-stretch">
       <div className="flex-1">
         <div className="mb-2 flex justify-items-stretch">
           <form className="grow basis-0" onSubmit={onShowFiles}>
@@ -229,5 +256,6 @@ export default function Main() {
         </Panel>
       </div>
     </div>
+    </>
   );
 }
