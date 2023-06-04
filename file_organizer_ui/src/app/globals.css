@@ -14,13 +14,18 @@ html {
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: rgb(var(--background-start-rgb));
   user-select: none;
+}
+
+.logo {
+  background-color: rgb(var(--background-start-rgb));
+  background-image: url('../../public/logo.png');
+  background-position: -0.7rem center;
+  background-size: contain;
+  background-blend-mode: darken;
+  background-repeat: no-repeat;
+  padding-left: 3.5rem;
 }
 
 /* a bug from PrimeReact? */

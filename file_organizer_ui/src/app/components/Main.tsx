@@ -80,15 +80,13 @@ async function analyzeFile(
 }
 
 const DEFAULT_DESTINATIONS = [
-  "~/Downloads/software/games",
   "~/Downloads/software",
   "~/Downloads/pictures",
   "~/Downloads/other",
   "~/Documents/work",
   "~/Documents/personal",
   "~/Documents/personal/family",
-  "~/Documents/personal/legal",
-  "~/Documents/personal/tax",
+  "~/Documents/personal/bills",
 ];
 
 export default function Main() {
