@@ -2,6 +2,8 @@
 
 AI-powered assistant to organize files on your computer.
 
+![Screenshot](./preview/ui.png)
+
 ## How it works
 It reads files in a directory and moves them to a new directory based on the file name, type and content. The destination directory is determined by the LLM model (supports GPT or Claude by Anthropic).
 
@@ -19,14 +21,10 @@ poetry update && cd file_organizer_ui && npm install
 
 ### Configuration
 
-Copy .env.example to .env and fill in the values. At least one of the following is required:
-- openai_api_key
-- anthropic_api_key
-
-```bash
-cp .env.example .env
-```
-
+You need your own API key to run this project.
+Copy `.env.example` to `.env` and fill in the values. At least one of the following is required:
+- `openai_api_key`
+- `anthropic_api_key`
 
 ## Usage
 
